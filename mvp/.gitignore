@@ -1,0 +1,9 @@
+# 本地数据与缓存不入库
+data/
+*.db
+*.db-wal
+*.db-shm
+__pycache__/
+.pytest_cache/
+.venv/
+vendor/

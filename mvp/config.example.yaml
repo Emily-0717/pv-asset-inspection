@@ -1,0 +1,36 @@
+# 配置模板：复制为 config.yaml 后填写；真实 config.yaml 不要提交
+# 所有阈值、地址、超时都放这里，代码里不写死
+app:
+  env: dev                      # dev / test / prod
+  synthetic_only: true          # true 时拒绝非 synthetic 文档入库
+  timezone: Asia/Shanghai
+  audit_retention_days: 180     # >= 180
+
+server:
+  host: 127.0.0.1
+  port: 8010
+
+storage:
+  db_path: ./data/mvp.db        # 相对路径按 config.yaml 所在目录解析
+  sql_dir: ./app/sql
+
+model:
+  # OpenAI 兼容接口；密钥用环境变量注入，不要写明文
+  base_url: ${SOLAR_MODEL_BASE_URL}
+  api_key: ${SOLAR_MODEL_API_KEY}
+  model: ${SOLAR_MODEL_NAME}
+  embedding_model: ${SOLAR_EMBED_MODEL}   # 可留空，留空即纯 FTS
+  timeout_seconds: 20
+  max_retries: 2
+  temperature: 0.0
+
+rag:
+  chunk_size: 380               # 每块目标字符数
+  chunk_overlap: 60             # 相邻块重叠，避免答案被切口截断
+  top_k: 5
+  mode: hybrid                  # fts / vector / hybrid
+  max_scan: 500                 # 向量暴力扫描上限
+
+harness:
+  max_steps: 4                  # 工具调用轮数预算
+  tool_timeout_seconds: 8

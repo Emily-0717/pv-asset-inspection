@@ -1,0 +1,34 @@
+# 本地演示配置：模型留空 => Harness 自动走"检索摘录"降级路径
+app:
+  env: dev
+  synthetic_only: true      # 合成隔离：拒绝写入非 synthetic 文档
+  timezone: Asia/Shanghai
+  audit_retention_days: 180 # 不得低于 180
+
+server:
+  host: 127.0.0.1           # MVP 只绑本机
+  port: 8010
+
+storage:
+  db_path: ./data/mvp.db
+  sql_dir: ./app/sql
+
+model:
+  base_url: ""              # 例：https://api.deepseek.com/v1
+  api_key: ""               # 建议用 ${SOLAR_MODEL_API_KEY} 从环境变量注入
+  model: ""                 # 例：deepseek-chat
+  embedding_model: ""       # 留空则只做 FTS，不走向量
+  timeout_seconds: 20
+  max_retries: 1
+  temperature: 0.0
+
+rag:
+  chunk_size: 380
+  chunk_overlap: 60
+  top_k: 5
+  mode: hybrid              # fts / vector / hybrid
+  max_scan: 500
+
+harness:
+  max_steps: 4
+  tool_timeout_seconds: 8
