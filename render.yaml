@@ -1,0 +1,14 @@
+# Render Blueprint：推仓库后在 Render 里选 New > Blueprint，指向本文件即可
+services:
+  - type: web
+    name: solar-triage-mvp
+    runtime: docker
+    dockerfilePath: ./mvp/Dockerfile
+    dockerContext: ./mvp
+    plan: free
+    region: singapore
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: SOLAR_DEMO_SEED
+        value: "1"
