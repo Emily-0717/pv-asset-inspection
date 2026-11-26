@@ -10,14 +10,14 @@
 | 改动 | 文件 | 作用 |
 |---|---|---|
 | 监听地址与端口读环境变量 | `run.py` | 云平台注入 `PORT=8080`、`HOST=0.0.0.0` 即可，不再固定 `127.0.0.1:8010` |
-| 演示数据可开关 | `run.py` | `SOLAR_DEMO_SEED=1` 时先跑 `scripts/bootstrap.py` 灌合成数据（可重复执行，不覆盖已有） |
+| 空库自动灌演示数据 | `run.py` | `app.env=dev` 且 `users` 表为空时自动跑 `scripts/bootstrap.py`（幂等，不覆盖已有）；`SOLAR_DEMO_SEED=1` 可强制灌 |
 | 容器镜像 | `Dockerfile` | `python:3.12-slim` + 依赖层缓存 + `HEALTHCHECK /health` |
 | 一键蓝图 | `render.yaml` | Render 选 Blueprint 直接出服务 |
 
 本地验证过的启动方式（与线上一致）：
 
 ```bash
-HOST=0.0.0.0 PORT=8080 SOLAR_DEMO_SEED=1 python run.py
+HOST=0.0.0.0 PORT=8080 python run.py   # 空库自动灌种子
 ```
 
 ---
@@ -28,7 +28,7 @@ HOST=0.0.0.0 PORT=8080 SOLAR_DEMO_SEED=1 python run.py
 2. **New → Blueprint**，选中仓库 `Emily-0717/pv-asset-inspection`，Render 会自动读根目录 `render.yaml`
    （若 Blueprint 不识别，改走 **New → Web Service**：Language 选 `Docker`，Root Directory `mvp`，Dockerfile `Dockerfile`）
 3. Plan 选 **Free**，Region 选 **Singapore**（国内访问比 Oregon 快）
-4. 确认环境变量：`SOLAR_DEMO_SEED=1`（Blueprint 已写）
+4. 环境变量非必填：`app.env=dev` 且库为空时会自动灌演示数据（蓝图里的 `SOLAR_DEMO_SEED=1` 只是强制开关）
 5. Create → 等 2–3 分钟构建
 
 拿到地址后验证：
@@ -113,6 +113,6 @@ curl -H "X-API-Key: $KEY" -H "Content-Type: application/json" \
 |---|---|---|
 | `PORT` | 平台自动 | 容器监听端口，默认 8080 |
 | `HOST` | 否 | 默认已写 `0.0.0.0`（镜像内） |
-| `SOLAR_DEMO_SEED` | 演示必填 | `1` = 首次启动灌合成数据 |
+| `SOLAR_DEMO_SEED` | 可选 | `1` = 强制灌合成数据；不填时 `app.env=dev` 且库为空也会自动灌 |
 | `SOLAR_MVP_CONFIG` | 否 | 镜像内已写 `/app/config.yaml` |
 | `SOLAR_MODEL_API_KEY` | 接模型时填 | 配合 `config.yaml` 中的 `${SOLAR_MODEL_API_KEY}` |
