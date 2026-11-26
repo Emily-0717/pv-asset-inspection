@@ -451,3 +451,53 @@ def list_audit(
                 pass
         items.append(item)
     return ok({"items": items, "count": len(items)})
+
+
+@router.get("/", response_class=HTMLResponse, include_in_schema=False)
+def home() -> HTMLResponse:
+    """根路径入口页：裸域名直接打开时给人一个能点的页面，而不是 404。
+
+    公开访问、不返回任何数据：只放三个入口链接与一句服务说明。
+    """
+    html = """<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>晨曦光伏 · 知识增强分流 MVP</title>
+<style>
+:root{color-scheme:light}
+body{margin:0;padding:28px 20px 40px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+     background:#f6f7f4;color:#1f2a1c;line-height:1.65}
+.wrap{max-width:640px;margin:0 auto}
+h1{font-size:21px;margin:0 0 4px;letter-spacing:.5px}
+.sub{font-size:13px;color:#6b7566;margin-bottom:22px}
+.card{display:block;background:#fff;border:1px solid #e2e7dc;border-radius:10px;padding:14px 16px;margin-bottom:12px;
+      text-decoration:none;color:inherit}
+.card:active{background:#f2f5ee}
+.t{font-size:15px;font-weight:600;color:#1f2a1c}
+.d{font-size:12.5px;color:#6b7566;margin-top:2px}
+.tag{display:inline-block;font-size:11px;color:#5b6b4f;background:#eef2e6;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.note{font-size:12px;color:#8a9285;margin-top:18px;border-top:1px dashed #dfe4d8;padding-top:12px}
+code{background:#eef1ea;padding:1px 5px;border-radius:4px;font-size:12px}
+</style></head><body><div class="wrap">
+<h1>晨曦光伏 · 知识增强分流 MVP</h1>
+<div class="sub">只读核对 · 证据可追溯 · 人工交接（合成数据，不接生产系统）</div>
+
+<a class="card" href="/docs">
+  <div class="t">接口文档<span class="tag">Swagger</span></div>
+  <div class="d">所有接口可直接在页面上试调用</div>
+</a>
+<a class="card" href="/wiki/view?api_key=sk_viewer_demo">
+  <div class="t">知识图谱视图<span class="tag">只读</span></div>
+  <div class="d">原因 / 证据 / 动作 三元组与相邻节点</div>
+</a>
+<a class="card" href="/health">
+  <div class="t">健康检查</div>
+  <div class="d">返回运行环境、检索模式、模型是否启用</div>
+</a>
+
+<div class="note">
+免费实例 15 分钟无访问会休眠，第一次打开约需 30–60 秒，请稍等再刷新。<br>
+调用接口需在请求头带 <code>X-API-Key</code>；图谱页因浏览器无法自定义请求头，改用 <code>?api_key=</code> 参数。
+</div>
+</div></body></html>"""
+    return HTMLResponse(html)
